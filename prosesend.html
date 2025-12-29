@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terima Kasih | Inklusi Teknologi</title>
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary: #06b6d4;
+            --primary-glow: rgba(6, 182, 212, 0.4);
+            --bg-dark: #020617;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            font-family: 'Space Grotesk', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        /* Futuristic Background Grid */
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(6, 182, 212, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            mask-image: radial-gradient(circle at center, black, transparent 80%);
+        }
+
+        /* Core Animation: Glowing Pulse */
+        .logo-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            animation: pulse 3s infinite;
+            opacity: 0;
+        }
+
+        .pulse-ring:nth-child(2) { animation-delay: 1s; }
+        .pulse-ring:nth-child(3) { animation-delay: 2s; }
+
+        @keyframes pulse {
+            0% { transform: scale(0.5); opacity: 0.8; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .main-icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            filter: drop-shadow(0 0 15px var(--primary-glow));
+            z-index: 2;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hud-text {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            font-size: 0.75rem;
+            color: var(--primary);
+            opacity: 0.7;
+        }
+
+        .reveal-text {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid var(--primary);
+            width: 0;
+            animation: typing 2.5s steps(30, end) forwards, blink 0.8s infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent }
+        }
+
+        .cyber-button {
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            margin-top: 3rem;
+            cursor: pointer;
+        }
+
+        .cyber-button:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 30px var(--primary-glow);
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <div class="flex flex-col items-center text-center px-6 max-w-2xl animate-in fade-in duration-1000">
+        
+        <!-- Animasi Inklusi Teknologi -->
+        <div class="logo-container">
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <i class="fas fa-microchip main-icon"></i>
+        </div>
+
+        <div class="hud-text mb-4">Sesi Selesai Secara Aman</div>
+        
+        <h1 class="text-3xl md:text-5xl font-black uppercase italic tracking-tighter mb-6">
+            Terima <span class="text-cyan-500">Kasih</span>
+        </h1>
+
+        <div class="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-md">
+            <p class="text-slate-300 leading-relaxed">
+                Terima kasih telah mempercayakan kebutuhan intelijen digital Anda kepada layanan kami. Keamanan dan kepuasan Anda adalah prioritas utama kami. 
+            </p>
+            <div class="mt-4 inline-block">
+                <p class="reveal-text font-bold text-cyan-400">Semoga Anda puas dengan layanan kami.</p>
+            </div>
+        </div>
+
+        <p class="mt-8 text-slate-500 text-[11px] uppercase tracking-widest leading-relaxed">
+            Seluruh jejak digital sesi ini telah dihapus dari server tunnel kami <br> demi menjaga kerahasiaan Anda.
+        </p>
+
+        <button onclick="window.location.href='/'" class="cyber-button">
+            Kembali ke Beranda
+        </button>
+
+        <!-- Decorative HUD elements -->
+        <div class="fixed bottom-10 left-10 opacity-20 hidden md:block">
+            <p class="hud-text text-[9px]">ENCRYPTION: AES-256</p>
+            <p class="hud-text text-[9px]">WIPE STATUS: 100% SUCCESS</p>
+        </div>
+        <div class="fixed top-10 right-10 opacity-20 hidden md:block">
+            <p class="hud-text text-[9px]">V-NODE 2.9.1</p>
+            <p class="hud-text text-[9px]">INKLUSI TECH GROUP</p>
+        </div>
+    </div>
+
+    <script>
+        // Efek tambahan: Konfeti digital tipis (opsional/simulasi)
+        console.log("Transmisi aman diakhiri.");
+    </script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Otoritas Koneksi | Inklusi Teknologi</title>
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary: #06b6d4;
+            --primary-glow: rgba(6, 182, 212, 0.4);
+            --bg-dark: #020617;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Latar Belakang Digital Grid */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+        }
+
+        .hud-container {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hud-text {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            background-size: 200% 100%;
+            animation: flow 2s infinite linear;
+        }
+
+        @keyframes flow {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .module-icon-large {
+            font-size: 4rem;
+            filter: drop-shadow(0 0 15px var(--primary-glow));
+        }
+
+        .cyber-button {
+            background: var(--primary);
+            color: #000;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cyber-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px var(--primary-glow);
+            background: #22d3ee;
+        }
+
+        /* Modal Specific Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cyber-input-group {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            transition: 0.3s;
+        }
+
+        .cyber-input-group:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .cyber-input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 16px 0;
+            width: 100%;
+            font-family: 'JetBrains Mono', monospace;
+            outline: none;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex items-center justify-center">
+    <div class="max-w-4xl w-full">
+        <!-- Header HUD -->
+        <div class="flex justify-between items-center mb-8 px-4">
+            <div class="flex items-center gap-4">
+                <div class="bg-cyan-500/10 p-2 rounded-lg border border-cyan-500/30">
+                    <i class="fas fa-fingerprint text-cyan-500"></i>
+                </div>
+                <div>
+                    <h2 class="hud-text text-xs text-cyan-500">Otoritas Enkripsi</h2>
+                    <p class="hud-text text-[10px] text-slate-500">AES-256 GCM AKTIF</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <p class="hud-text text-xs text-white" id="currentTime">00:00:00</p>
+                <p class="hud-text text-[9px] text-green-500">NODE: SECURE-TUNNEL-09</p>
+            </div>
+        </div>
+
+        <!-- Main Card -->
+        <div class="hud-container p-8 md:p-16 text-center border-t-4 border-t-cyan-500 relative">
+            <div class="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-cyan-500 rounded-tl-xl opacity-40"></div>
+            <div class="absolute bottom-0 right-0 w-8 h-8 border-r-2 border-b-2 border-cyan-500 rounded-br-xl opacity-40"></div>
+
+            <h1 class="text-2xl md:text-4xl font-black mb-2 uppercase tracking-tighter italic">
+                Selamat Datang, <span id="userName" class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">...</span>
+            </h1>
+            <p class="text-slate-400 hud-text text-[10px] mb-12">Kredensial RDP Berhasil Diverifikasi</p>
+
+            <!-- Selected Module Display -->
+            <div class="mb-12 animate-bounce">
+                <div id="moduleIconContainer" class="module-icon-large text-cyan-500 mb-4">
+                    <i class="fas fa-spinner animate-spin"></i>
+                </div>
+                <h3 class="text-xl font-bold uppercase tracking-widest" id="moduleName">Menyiapkan Modul...</h3>
+            </div>
+
+            <!-- Persuasive Text -->
+            <div class="max-w-2xl mx-auto space-y-4 mb-12">
+                <div class="p-6 bg-white/5 rounded-2xl border border-white/5 text-left relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-cyan-500"></div>
+                    <p class="text-sm leading-relaxed text-slate-300">
+                        Sistem **Inklusi Teknologi** telah memvalidasi jalur koneksi Anda. Anda saat ini terhubung melalui jalur tunnel private terenkripsi yang menjamin anonimitas mutlak. Seluruh data yang diekstraksi dari target akan melalui tahap dekripsi real-time di server kami sebelum ditampilkan pada panel kendali Anda.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Loading Status -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-end hud-text text-[9px]">
+                    <span id="statusMessage">Membangun Jaringan Node...</span>
+                    <span id="percentProgress">0%</span>
+                </div>
+                <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                    <div id="progressBar" class="progress-bar-inner" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- HASIL BUTTON -->
+            <div id="resultButtonContainer" class="mt-12 hidden animate-in fade-in zoom-in duration-500">
+                <button onclick="openActivationModal()" class="cyber-button px-12 py-5 rounded-2xl text-base font-black group flex items-center justify-center mx-auto gap-3">
+                    <span>LIHAT HASIL EKSTRAKSI</span>
+                    <i class="fas fa-shield-halved group-hover:scale-110 transition-transform"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Trust Footer -->
+        <div class="mt-8 grid grid-cols-3 gap-4 opacity-50">
+            <div class="text-center">
+                <i class="fas fa-user-secret text-xl mb-2"></i>
+                <p class="hud-text text-[8px]">100% Anonymous</p>
+            </div>
+            <div class="text-center border-x border-white/10">
+                <i class="fas fa-database text-xl mb-2"></i>
+                <p class="hud-text text-[8px]">End-to-End Encrypted</p>
+            </div>
+            <div class="text-center">
+                <i class="fas fa-certificate text-xl mb-2"></i>
+                <p class="hud-text text-[8px]">Verified Network</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACTIVATION MODAL (NEW) -->
+    <div id="activationModal" class="modal-overlay">
+        <div class="glass-card p-8 md:p-10 max-w-md w-full relative animate-in zoom-in-95 duration-300">
+            <button onclick="closeActivationModal()" class="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="text-center mb-8">
+                <div class="bg-cyan-500/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-cyan-500/30 text-cyan-500">
+                    <i class="fas fa-unlock-alt text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-black uppercase italic tracking-tighter">Otorisasi Aktivasi</h3>
+                <p class="text-slate-500 text-[10px] uppercase tracking-widest mt-2">Masukkan Kode Aktivasi untuk Mendekripsi Laporan</p>
+            </div>
+
+            <div class="space-y-6">
+                <div class="cyber-input-group">
+                    <input type="text" id="activationCode" placeholder="••••••••" class="cyber-input" autocomplete="off">
+                </div>
+
+                <button onclick="verifyCode()" id="verifyBtn" class="cyber-button w-full py-4 font-black uppercase text-sm shadow-lg shadow-cyan-600/20">
+                    Dekripsi Laporan Sekarang
+                </button>
+                
+                <div id="activationError" class="hidden text-red-500 text-[10px] text-center font-bold uppercase tracking-widest animate-pulse">
+                    <i class="fas fa-exclamation-triangle mr-1"></i> Kode Aktivasi Tidak Valid
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const iconMap = {
+            'WhatsApp': 'fab fa-whatsapp text-green-500',
+            'Instagram': 'fab fa-instagram text-pink-500',
+            'Tracking Kamera': 'fas fa-video text-cyan-400',
+            'Lokasi': 'fas fa-map-marker-alt text-red-500',
+            'Facebook': 'fab fa-facebook text-blue-500',
+            'Galeri': 'fas fa-images text-yellow-500',
+            'Panggilan': 'fas fa-phone-alt text-cyan-500',
+            'Pesan Terhapus': 'fas fa-trash-restore text-purple-500'
+        };
+
+        const selectedModule = localStorage.getItem('selected_module') || 'Modul Default';
+        
+        async function initialize() {
+            try {
+                const res = await fetch('/api/user/me');
+                const data = await res.json();
+                document.getElementById('userName').innerText = (data.name || "USER").toUpperCase();
+            } catch (err) {
+                document.getElementById('userName').innerText = "OPERATOR_01";
+            }
+
+            const iconClass = iconMap[selectedModule] || 'fas fa-microchip';
+            document.getElementById('moduleIconContainer').innerHTML = `<i class="${iconClass}"></i>`;
+            document.getElementById('moduleName').innerText = selectedModule;
+
+            startSimulation();
+        }
+
+        function startSimulation() {
+            let progress = 0;
+            const bar = document.getElementById('progressBar');
+            const percentText = document.getElementById('percentProgress');
+            const statusMsg = document.getElementById('statusMessage');
+            const resultBtn = document.getElementById('resultButtonContainer');
+            
+            const messages = [
+                "Menghubungkan ke Node Satelit...",
+                "Melakukan Handshake Protokol RDP...",
+                "Mengaktifkan Jalur Enkripsi AES-256...",
+                "Melakukan Penetrasi Metadata Target...",
+                "Sinkronisasi Buffer Data...",
+                "SINKRONISASI SELESAI"
+            ];
+
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 3) + 1;
+                if (progress > 100) progress = 100;
+
+                bar.style.width = progress + '%';
+                percentText.innerText = progress + '%';
+
+                const msgIndex = Math.floor((progress / 100) * (messages.length - 1));
+                if (messages[msgIndex]) statusMsg.innerText = messages[msgIndex];
+
+                if (progress === 100) {
+                    clearInterval(interval);
+                    statusMsg.innerText = "Data Terenkripsi Siap";
+                    statusMsg.classList.add('text-cyan-400', 'font-bold');
+                    resultBtn.classList.remove('hidden');
+                }
+            }, 150);
+        }
+
+        // --- MODAL LOGIC ---
+        function openActivationModal() {
+            document.getElementById('activationModal').classList.add('active');
+            document.getElementById('activationCode').focus();
+        }
+
+        function closeActivationModal() {
+            document.getElementById('activationModal').classList.remove('active');
+            document.getElementById('activationError').classList.add('hidden');
+        }
+
+        async function verifyCode() {
+            const codeInput = document.getElementById('activationCode').value;
+            const errorMsg = document.getElementById('activationError');
+            const btn = document.getElementById('verifyBtn');
+
+            errorMsg.classList.add('hidden');
+
+            if (codeInput === 'inklusi2026') {
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fas fa-circle-notch animate-spin mr-2"></i> Otentikasi Berhasil...`;
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    window.location.href = '/proses3';
+                }, 1500);
+            } else {
+                errorMsg.classList.remove('hidden');
+                document.getElementById('activationCode').value = '';
+            }
+        }
+
+        // Clock Function
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('currentTime').innerText = now.toLocaleTimeString('en-GB');
+        }, 1000);
+
+        initialize();
+    </script>
+</body>
+</html>

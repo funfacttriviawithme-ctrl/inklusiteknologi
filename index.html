@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal Intelijen | Inklusi Teknologi</title>
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary: #06b6d4;
+            --primary-glow: rgba(6, 182, 212, 0.4);
+            --bg-dark: #020617;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Futuristic Background Grid */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(6, 182, 212, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        /* Scanning Line Animation */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.2;
+            z-index: 10;
+            animation: scan 4s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+
+        /* Glowing Orbs */
+        .orb {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .glass-container {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cyber-input {
+            background: rgba(2, 6, 23, 0.6);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .cyber-button {
+            background: var(--primary);
+            color: #000;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cyber-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px var(--primary-glow);
+            background: #22d3ee;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .hud-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+        }
+
+        .brand-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 64px;
+            width: 64px;
+            background: rgba(6, 182, 212, 0.15);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .brand-logo {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Testimonial Style */
+        .testimonial-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+            transition: 0.3s;
+            position: relative;
+        }
+        .testimonial-card:hover {
+            border-color: var(--primary);
+            background: rgba(6, 182, 212, 0.05);
+            transform: translateY(-5px);
+        }
+        .chat-bubble {
+            position: relative;
+            background: rgba(2, 6, 23, 0.8);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+        }
+
+        /* Modal Background */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body class="items-center justify-center p-4">
+    <div class="orb" style="top: -200px; left: -200px;"></div>
+    <div class="orb" style="bottom: -200px; right: -200px; background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);"></div>
+
+    <!-- Header Navbar -->
+    <nav class="fixed top-0 left-0 w-full p-6 md:p-8 flex justify-between items-center z-50 bg-slate-950/50 backdrop-blur-md border-b border-white/5">
+        <div class="flex items-center gap-4">
+            <div class="brand-logo-container">
+                <img src="/Assets/images/logo.png" alt="IT Logo" class="brand-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <svg class="brand-logo" style="display:none;" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 5L90 25V75L50 95L10 75V25L50 5Z" stroke="#06b6d4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M50 25L75 40V60L50 75L25 60V40L50 25Z" fill="#06b6d4" fill-opacity="0.2" stroke="#06b6d4" stroke-width="2"/>
+                    <circle cx="50" cy="50" r="8" fill="#06b6d4"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" /></circle>
+                </svg>
+            </div>
+            <h1 class="font-black text-2xl tracking-tighter uppercase italic hidden sm:block">INKLUSI <span class="text-cyan-500">TECH</span></h1>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="hidden md:flex items-center gap-2">
+                <span class="status-dot"></span>
+                <span class="hud-text text-white">Sistem Aktif</span>
+            </div>
+            <button onclick="toggleModal('registerModal')" class="cyber-button px-6 py-3 text-xs">Akses Pendaftaran</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl w-full text-center mt-32 md:mt-40 animate-in fade-in slide-in-from-bottom-10 duration-1000 mx-auto">
+        <div class="hud-text mb-6">Protokol Keamanan Terenkripsi</div>
+        <h2 class="text-5xl md:text-8xl font-black mb-8 tracking-tighter leading-none italic uppercase">
+            Infrastruktur <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600">Intelijen Digital</span>
+        </h2>
+        <p class="text-slate-400 max-w-2xl mx-auto mb-16 text-lg font-medium leading-relaxed px-4">
+            Portal akses untuk sinkronisasi metadata target secara real-time. Masukkan identitas subjek untuk memulai jalur koneksi terenkripsi.
+        </p>
+
+        <!-- Input Box & Main Action -->
+        <div class="max-w-xl mx-auto px-4 mb-20">
+            <div class="glass-container p-4 md:p-6 shadow-2xl mb-8">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="relative flex-1">
+                        <i class="fas fa-phone-alt absolute left-5 top-1/2 -translate-y-1/2 text-cyan-500"></i>
+                        <input id="targetPhone" type="text" placeholder="MASUKKAN NOMOR TARGET..." 
+                               class="cyber-input w-full pl-14 pr-6 py-5 rounded-2xl text-lg font-bold tracking-widest placeholder:text-slate-700">
+                    </div>
+                    <button onclick="checkTarget()" class="cyber-button px-10 py-5 rounded-2xl flex items-center justify-center gap-3 group">
+                        <span>Lacak</span>
+                        <i class="fas fa-search transition-transform group-hover:scale-125"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="flex flex-wrap justify-center gap-4">
+                <div class="flex items-center gap-2 px-6 py-4 bg-white/5 rounded-xl border border-white/5">
+                    <i class="fas fa-network-wired text-slate-500"></i>
+                    <span class="hud-text text-slate-400">Node: ID-JAKARTA-01</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonial Section -->
+        <div class="mt-32 px-4 text-left">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="h-px flex-1 bg-gradient-to-r from-transparent to-white/10"></div>
+                <h3 class="hud-text text-xl">Log Aktivitas Klien</h3>
+                <div class="h-px flex-1 bg-gradient-to-l from-transparent to-white/10"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testi 1 -->
+                <div class="testimonial-card group">
+                    <div class="chat-bubble">
+                        <p class="text-sm italic leading-relaxed text-slate-300">
+                            "Protokol enkripsi Inklusi Tech sangat solid. Saya berhasil mengekstraksi metadata target dalam hitungan detik tanpa meninggalkan jejak digital."
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30 text-cyan-500 font-bold">AS</div>
+                        <div>
+                            <h5 class="font-bold text-sm">Aditya Saputra</h5>
+                            <p class="text-[10px] text-slate-500 uppercase tracking-widest">Security Specialist</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testi 2 -->
+                <div class="testimonial-card group">
+                    <div class="chat-bubble" style="border-color: #3b82f6;">
+                        <p class="text-sm italic leading-relaxed text-slate-300">
+                            "Interface futuristik dan latency node yang rendah membuat pemantauan aset menjadi sangat efisien. Sistem intelijen terbaik tahun ini."
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center border border-blue-500/30 text-blue-500 font-bold">BP</div>
+                        <div>
+                            <h5 class="font-bold text-sm">mulyani</h5>
+                            <p class="text-[10px] text-slate-500 uppercase tracking-widest">Digital Investigator</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testi 3 -->
+                <div class="testimonial-card group">
+                    <div class="chat-bubble" style="border-color: #6366f1;">
+                        <p class="text-sm italic leading-relaxed text-slate-300">
+                            "Akses RDP-nya sangat lancar. Penjadwalan sinkronisasi otomatis membantu saya mendapatkan data terbaru secara real-time tanpa perlu login berulang."
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30 text-indigo-500 font-bold">DL</div>
+                        <div>
+                            <h5 class="font-bold text-sm">Dewi Lestari</h5>
+                            <p class="text-[10px] text-slate-500 uppercase tracking-widest">Private Analyst</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Hud -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-32 text-left px-4">
+            <div class="glass-container p-8 border-l-4 border-l-cyan-500 group hover:bg-cyan-500/5 transition-all">
+                <i class="fas fa-shield-halved text-cyan-500 text-2xl mb-6"></i>
+                <h4 class="font-bold text-xl mb-3 uppercase tracking-tight">AES-256 GCM</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Enkripsi tingkat militer pada setiap paket data yang diekstraksi dari target.</p>
+            </div>
+            <div class="glass-container p-8 border-l-4 border-l-blue-500 group hover:bg-blue-500/5 transition-all">
+                <i class="fas fa-satellite-dish text-blue-500 text-2xl mb-6"></i>
+                <h4 class="font-bold text-xl mb-3 uppercase tracking-tight">Live Sync</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Sinkronisasi data real-time melalui jalur node private yang tidak terdeteksi.</p>
+            </div>
+            <div class="glass-container p-8 border-l-4 border-l-indigo-500 group hover:bg-indigo-500/5 transition-all">
+                <i class="fas fa-fingerprint text-indigo-500 text-2xl mb-6"></i>
+                <h4 class="font-bold text-xl mb-3 uppercase tracking-tight">Zero Trace</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Akses sepenuhnya anonim tanpa meninggalkan jejak digital pada perangkat subjek.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Registrasi -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content glass-container p-8 md:p-12 max-w-lg w-full">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-2xl font-black italic uppercase text-cyan-500">Permohonan Aktivasi</h3>
+                <button onclick="toggleModal('registerModal')" class="text-slate-500 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="registerForm" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="hud-text text-[9px]">Nama Lengkap Klien</label>
+                    <input type="text" id="regName" placeholder="MASUKKAN NAMA LENGKAP..." class="cyber-input w-full p-4 rounded-xl outline-none" required>
+                </div>
+                <div class="space-y-2">
+                    <label class="hud-text text-[9px]">Nomor HP Target Utama</label>
+                    <input type="tel" id="regTarget" placeholder="NOMOR TARGET (08...)" class="cyber-input w-full p-4 rounded-xl outline-none" required>
+                </div>
+                <div class="space-y-2">
+                    <label class="hud-text text-[9px]">Pilihan Protokol</label>
+                    <select id="regService" class="cyber-input w-full p-4 rounded-xl outline-none cursor-pointer">
+                        <option value="REGULER">PROTOKOL REGULER</option>
+                        <option value="PREMIUM" selected>PROTOKOL PREMIUM</option>
+                        <option value="EKSKLUSIF">PROTOKOL EKSKLUSIF</option>
+                    </select>
+                </div>
+                <button type="submit" class="cyber-button w-full py-5 mt-4 font-black uppercase shadow-lg shadow-cyan-500/20">
+                    Kirim Metadata Aktivasi
+                </button>
+                <p class="text-[10px] text-center text-slate-500 uppercase tracking-widest leading-relaxed">
+                    Admin akan memverifikasi data Anda dan mengirimkan kredensial akses RDP secara pribadi.
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bottom HUD Decor -->
+    <div class="fixed bottom-0 left-0 w-full p-8 flex flex-col md:flex-row justify-between items-center gap-4 pointer-events-none opacity-40">
+        <div class="hud-text">LATENCY: 14MS / PACKETS: 1024KBPS</div>
+        <div class="hud-text">SECURE NODE: JP-TOKYO-01</div>
+    </div>
+
+    <script>
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        async function checkTarget() {
+            const phoneInput = document.getElementById('targetPhone');
+            const phone = phoneInput.value.trim();
+            
+            if (!phone) {
+                alert('IDENTIFIKASI_ERROR: Mohon masukkan nomor target.');
+                return;
+            }
+
+            const btn = document.querySelector('.cyber-button');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-circle-notch animate-spin"></i> <span>Sinkronisasi...</span>`;
+
+            try {
+                const res = await fetch('/api/user/check-target', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ phone })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    setTimeout(() => { window.location.href = 'proses'; }, 1500);
+                } else {
+                    alert('SISTEM_ERROR: Nomor target tidak terdeteksi dalam database atau belum diaktifkan oleh admin.');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (err) {
+                alert('KONEKSI_ERROR: Gagal menghubungi server intelijen.');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // Handle Registration (Send to Waiting Room)
+        document.getElementById('registerForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "MENGIRIM...";
+
+            const data = {
+                name: document.getElementById('regName').value,
+                phoneNumberTarget: document.getElementById('regTarget').value,
+                service: document.getElementById('regService').value
+            };
+
+            try {
+                // Endpoint baru untuk Antrian (Pending Room)
+                const res = await fetch('/api/pending', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                
+                if (res.ok) {
+                    alert('PERMOHONAN_DITERIMA: Metadata pendaftaran Anda telah masuk antrian. Admin akan segera memproses dan menghubungi Anda secara pribadi.');
+                    toggleModal('registerModal');
+                    document.getElementById('registerForm').reset();
+                } else {
+                    alert('GAGAL: Terjadi kesalahan saat mengirim pendaftaran.');
+                }
+            } catch (err) {
+                alert('SISTEM_ERROR: Gangguan koneksi ke pusat data.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Kirim Metadata Aktivasi";
+            }
+        };
+
+        // Filter input nomor HP: Hanya angka
+        document.querySelectorAll('input[type="tel"], #targetPhone').forEach(input => {
+            input.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        });
+    </script>
+</body>
+</html>
