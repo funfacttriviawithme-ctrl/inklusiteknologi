@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Admin | Inklusi Teknologi</title>
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #06b6d4;
+            --primary-glow: rgba(6, 182, 212, 0.4);
+            --bg-dark: #020617;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --pending-color: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-dark); color: var(--text); font-family: 'Space Grotesk', sans-serif; min-height: 100vh; display: flex; overflow-x: hidden; }
+        body::before { content: ""; position: fixed; inset: 0; background-image: linear-gradient(to right, rgba(6, 182, 212, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(6, 182, 212, 0.05) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; }
+        .orb { position: fixed; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); filter: blur(80px); z-index: -1; pointer-events: none; }
+
+        .sidebar { width: 280px; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(20px); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+        .logo { padding: 40px 30px; border-bottom: 1px solid var(--border); }
+        .logo h2 { font-size: 1.2rem; font-weight: 900; letter-spacing: 2px; color: var(--primary); text-transform: uppercase; text-shadow: 0 0 15px var(--primary-glow); }
+        .logo p { font-size: 0.7rem; color: var(--text-muted); margin-top: 5px; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace; }
+        .sidebar-nav { padding: 30px 15px; flex: 1; }
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav li { margin-bottom: 10px; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 15px; padding: 14px 20px; color: var(--text-muted); text-decoration: none; border-radius: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 500; font-size: 0.95rem; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(6, 182, 212, 0.1); color: var(--primary); box-shadow: inset 0 0 10px rgba(6, 182, 212, 0.05); }
+
+        .main-content { flex: 1; padding: 40px; max-width: 1200px; margin: 0 auto; }
+        .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; }
+        .main-header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -1px; }
+        .user-info { display: flex; align-items: center; gap: 15px; background: var(--card-bg); padding: 10px 20px; border-radius: 100px; border: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+        .user-info i { color: var(--primary); }
+
+        .dashboard-stats { margin-bottom: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .stat-card { background: var(--card-bg); backdrop-filter: blur(10px); padding: 35px; border-radius: 24px; border: 1px solid var(--border); display: flex; align-items: center; gap: 25px; transition: transform 0.3s ease; }
+        .stat-icon { width: 65px; height: 65px; background: rgba(6, 182, 212, 0.1); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.5rem; }
+        .stat-number { font-size: 2.5rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; line-height: 1; }
+        .stat-label { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin-top: 5px; }
+
+        .btn-primary { background: var(--primary); color: #000; border: none; padding: 18px 32px; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 12px; text-transform: uppercase; letter-spacing: 1px; clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%); }
+        .btn-primary:hover { background: #22d3ee; transform: scale(1.05); box-shadow: 0 0 30px var(--primary-glow); }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(10px); z-index: 2000; padding: 20px; }
+        .modal-content { background: rgba(15, 23, 42, 0.95); margin: 5vh auto; padding: 40px; max-width: 600px; width: 100%; border-radius: 30px; border: 1px solid var(--border); position: relative; animation: modalSlide 0.4s ease-out; }
+        @keyframes modalSlide { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-content h3 { font-size: 1.8rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; text-align: center; }
+        .modal-content input, .modal-content select { width: 100%; padding: 16px; margin-bottom: 15px; background: rgba(2, 6, 23, 0.5); border: 1px solid var(--border); border-radius: 14px; color: var(--text); font-family: 'JetBrains Mono', monospace; transition: 0.3s; }
+        .modal-content input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 15px var(--primary-glow); }
+        .password-wrapper { position: relative; width: 100%; }
+        .password-toggle { position: absolute; right: 20px; top: 36%; transform: translateY(-50%); color: var(--primary); cursor: pointer; font-size: 1rem; z-index: 10; }
+        .close { position: absolute; top: 25px; right: 30px; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
+
+        /* Search Input */
+        .search-container { position: relative; margin-bottom: 20px; }
+        .search-container i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .search-container input { padding-left: 45px !important; margin-bottom: 0 !important; }
+
+        #userTable { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        #userTable th { text-align: left; padding: 15px 20px; color: var(--primary); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; }
+        #userTable tbody tr { background: rgba(255, 255, 255, 0.03); transition: 0.3s; }
+        #userTable td { padding: 20px; font-size: 0.9rem; }
+        #userTable td:first-child { border-radius: 15px 0 0 15px; font-family: 'JetBrains Mono', monospace; font-weight: bold; }
+        #userTable td:last-child { border-radius: 0 15px 15px 0; }
+
+        .action-btn { padding: 8px 16px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; border: none; text-transform: uppercase; }
+        .edit-btn { background: rgba(6, 182, 212, 0.15); color: var(--primary); border: 1px solid var(--primary-glow); margin-right: 5px; }
+        .delete-btn { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        /* Waiting Room Styling */
+        .waiting-item { background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.1); padding: 15px 20px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; transition: 0.3s; }
+        .waiting-item:hover { border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.1); }
+        .process-btn { background: #f59e0b; color: #000; padding: 6px 15px; border-radius: 8px; font-weight: 800; font-size: 0.7rem; cursor: pointer; border: none; text-transform: uppercase; }
+
+        footer { padding: 30px; text-align: center; color: var(--text-muted); font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; border-top: 1px solid var(--border); margin-top: 50px; }
+    </style>
+</head>
+<body>
+    <div class="orb" style="top: -100px; left: -100px;"></div>
+    <div class="orb" style="bottom: -100px; right: -100px; background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);"></div>
+
+    <div class="sidebar">
+        <div class="logo">
+            <h2>INKLUSI <span style="color:white">TECH</span></h2>
+            <p>COMMAND CENTER V2.9</p>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="#" class="active"><i class="fas fa-grid-2"></i> Dashboard</a></li>
+                <li><a href="#" id="openUserList"><i class="fas fa-users"></i> Kelola User</a></li>
+                <li><a href="#" id="openWaitingRoom"><i class="fas fa-clock"></i> Waiting Room</a></li> <!-- NEW BUTTON -->
+                <li><a href="#" id="logoutBtn"><i class="fas fa-power-off"></i> Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header class="main-header">
+            <div>
+                <h1>Dashboard</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Selamat datang di Pusat Kontrol Inklusi Teknologi.</p>
+            </div>
+            <div class="user-info">
+                <i class="fas fa-shield-check"></i>
+                <span>AUTH: ADMIN_ROOT</span>
+            </div>
+        </header>
+
+        <!-- Stats -->
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-astronaut"></i></div>
+                <div>
+                    <div class="stat-number" id="totalUsers">0</div>
+                    <div class="stat-label">Sesi Aktif</div>
+                </div>
+            </div>
+            <!-- Antrian Stat -->
+            <div class="stat-card" style="border-color: rgba(245, 158, 11, 0.3); cursor: pointer;" onclick="document.getElementById('openWaitingRoom').click()">
+                <div class="stat-icon" style="color: #f59e0b; background: rgba(245, 158, 11, 0.1);"><i class="fas fa-clock"></i></div>
+                <div>
+                    <div class="stat-number" id="totalPending" style="color: #f59e0b;">0</div>
+                    <div class="stat-label">Antrian Baru</div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-primary" id="addUserBtn">
+            <i class="fas fa-plus-circle"></i> Inisialisasi User Baru
+        </button>
+
+        <div style="margin-top: 40px; padding: 20px; border: 1px dashed var(--border); border-radius: 20px; color: var(--text-muted); font-size: 0.8rem;">
+            <i class="fas fa-info-circle"></i> Sistem sedang memantau node jaringan secara real-time. Seluruh data dienkripsi dengan protokol AES-256.
+        </div>
+    </div>
+
+    <!-- MODAL: TAMBAH/EDIT USER -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modalTitle">Tambah User</h3>
+            <form id="userForm">
+                <input type="hidden" id="editUserId" value="" />
+                <input type="hidden" id="pendingId" value="" />
+                
+                <input type="text" id="username" placeholder="RDP_USERNAME" required />
+                <div class="password-wrapper">
+                    <input type="password" id="password" placeholder="RDP_PASSWORD" required />
+                    <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                </div>
+                <input type="text" id="name" placeholder="NAMA_LENGKAP" required />
+                <input type="tel" id="phoneNumberTarget" placeholder="TARGET_PHONE_PATH" required />
+                <select id="service" required>
+                    <option value="" disabled>LEVEL_LAYANAN</option>
+                    <option value="REGULER">REGULER</option>
+                    <option value="PREMIUM" selected>PREMIUM</option>
+                    <option value="EKSKLUSIF">EKSKLUSIF</option>
+                </select>
+                <button type="submit" id="submitBtn" class="btn-primary" style="width:100%; justify-content: center; margin-top: 10px;">
+                    Simpan Metadata
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: DAFTAR USER AKTIF (Klien) -->
+    <div id="userListModal" class="modal">
+        <div class="modal-content" style="max-width: 850px;">
+            <span class="close">&times;</span>
+            <h3>Database Klien</h3>
+            
+            <!-- SEARCH BAR -->
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="userSearchInput" placeholder="Cari berdasarkan nama, username, atau nomor target..." onkeyup="filterUsers()">
+            </div>
+
+            <div style="overflow-x: auto; max-height: 450px;">
+                <table id="userTable">
+                    <thead>
+                        <tr><th>Username</th><th>Nama</th><th>Layanan</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="userTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: WAITING ROOM (Antrian) -->
+    <div id="waitingRoomModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close">&times;</span>
+            <h3 style="color: #f59e0b;"><i class="fas fa-inbox"></i> Waiting Room</h3>
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 20px;">Permohonan aktivasi yang masuk dari landing page.</p>
+            
+            <div id="pendingContainer" style="max-height: 450px; overflow-y: auto;">
+                <!-- Data antrian dimuat di sini -->
+            </div>
+        </div>
+    </div>
+
+    <footer><p>&copy; 2025 Inklusi Teknologi Intelligence. Seluruh transmisi dipantau.</p></footer>
+
+    <script>
+        let currentUsers = [];
+        let currentPendings = [];
+    
+        async function loadAll() {
+            try {
+                // Load Active Users
+                const res = await fetch('/api/users');
+                currentUsers = await res.json();
+                console.log('Data pengguna terbaru:', currentUsers);
+                document.getElementById('totalUsers').textContent = currentUsers.length;
+        
+                // Load Pending Users (Antrian)
+                const resP = await fetch('/api/pending');
+                currentPendings = await resP.json();
+                document.getElementById('totalPending').textContent = currentPendings.length;
+                
+                renderPendingList();
+                // Jika modal list user terbuka, update isinya
+                if (document.getElementById('userListModal').style.display === 'block') {
+                    renderUserList(currentUsers);
+                }
+            } catch (err) { console.error("Error sync data:", err); }
+        }
+
+        function renderPendingList() {
+            const pContainer = document.getElementById('pendingContainer');
+            pContainer.innerHTML = currentPendings.length ? '' : '<p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; padding: 20px;">Tidak ada pendaftaran tertunda.</p>';
+            
+            currentPendings.forEach(p => {
+                pContainer.innerHTML += `
+                    <div class="waiting-item">
+                        <div>
+                            <p style="font-weight: 800; font-size: 0.9rem;">${p.name}</p>
+                            <p style="font-family: 'JetBrains Mono'; font-size: 0.75rem; color: var(--text-muted);">Target: +${p.phoneNumberTarget} | Service: ${p.service}</p>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button class="process-btn" onclick="processPending('${p._id}', '${p.name}', '${p.phoneNumberTarget}', '${p.service}')">Proses</button>
+                            <button style="background:none; border:none; color:#ef4444; cursor:pointer; font-size: 1.1rem;" onclick="deletePending('${p._id}')"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    
+        function processPending(id, name, phone, service) {
+            document.getElementById('userForm').reset();
+            document.getElementById('editUserId').value = "";
+            document.getElementById('pendingId').value = id;
+            document.getElementById('name').value = name;
+            document.getElementById('phoneNumberTarget').value = phone;
+            document.getElementById('service').value = service;
+            document.getElementById('modalTitle').textContent = "Otorisasi Antrian";
+            document.getElementById('submitBtn').textContent = "Aktifkan Sesi";
+            
+            document.getElementById('waitingRoomModal').style.display = 'none';
+            document.getElementById('addUserModal').style.display = 'block';
+        }
+    
+        async function deletePending(id) {
+            if(!confirm('Abaikan pendaftaran ini?')) return;
+            await fetch(`/api/pending/${id}`, { method: 'DELETE' });
+            loadAll();
+        }
+    
+        async function deleteUser(id) {
+            if (!confirm('Hapus user ini secara permanen dari database aktif?')) return;
+            try {
+                const res = await fetch(`/api/users/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    loadAll();
+                    // Jika sedang difilter, hapus dari tampilan
+                    renderUserList(currentUsers);
+                }
+            } catch (err) { alert('Gagal menghapus user'); }
+        }
+    
+        function renderUserList(data) {
+            console.log('Render data pengguna:', data);
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = data.length ? '' : '<tr><td colspan="4" style="text-align:center; padding: 20px; color: var(--text-muted);">Data tidak ditemukan</td></tr>';
+            data.forEach(user => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${user.username}</td>
+                        <td>${user.name}</td>
+                        <td><span style="background:rgba(6,182,212,0.1); color:var(--primary); padding:4px 10px; border-radius:6px; font-size:0.7rem; font-weight:bold;">${user.service}</span></td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="openEditModal('${user._id}')">Edit</button>
+                            <button class="action-btn delete-btn" onclick="deleteUser('${user._id}')">Hapus</button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        // ✅ FITUR SEARCH
+        function filterUsers() {
+            const keyword = document.getElementById('userSearchInput').value.toLowerCase();
+            const filtered = currentUsers.filter(u => 
+                u.name.toLowerCase().includes(keyword) || 
+                u.username.toLowerCase().includes(keyword) || 
+                u.phoneNumberTarget.includes(keyword)
+            );
+            renderUserList(filtered);
+        }
+    
+        function openEditModal(id) {
+            const user = currentUsers.find(u => u._id === id);
+            if (!user) return;
+            document.getElementById('modalTitle').textContent = "Edit Metadata User";
+            document.getElementById('submitBtn').textContent = "Perbarui Metadata";
+            document.getElementById('editUserId').value = user._id;
+            document.getElementById('pendingId').value = "";
+            document.getElementById('username').value = user.username;
+            document.getElementById('password').value = user.password;
+            document.getElementById('name').value = user.name;
+            document.getElementById('phoneNumberTarget').value = user.phoneNumberTarget;
+            document.getElementById('service').value = user.service;
+            document.getElementById('userListModal').style.display = 'none';
+            document.getElementById('addUserModal').style.display = 'block';
+        }
+    
+        document.getElementById('userForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('editUserId').value;
+            const pId = document.getElementById('pendingId').value;
+            const data = {
+                username: document.getElementById('username').value.trim(),
+                password: document.getElementById('password').value,
+                name: document.getElementById('name').value.trim(),
+                phoneNumberTarget: document.getElementById('phoneNumberTarget').value.trim(),
+                service: document.getElementById('service').value
+            };
+    
+            const url = editId ? `/api/users/${editId}` : '/api/users';
+            const method = editId ? 'PUT' : 'POST';
+    
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+    
+                if (res.ok) {
+                    if(pId) await fetch(`/api/pending/${pId}`, { method: 'DELETE' });
+                    alert('Operasi Berhasil!');
+                    document.getElementById('addUserModal').style.display = 'none';
+                    loadAll();
+                } else {
+                    const err = await res.json();
+                    alert(err.message || 'Gagal menyimpan data');
+                }
+            } catch (err) { alert('Gangguan transmisi'); }
+        };
+    
+        document.getElementById('logoutBtn').onclick = (e) => {
+            e.preventDefault();
+            window.location.href = '/login';
+        };
+    
+        document.getElementById('addUserBtn').onclick = () => {
+            document.getElementById('userForm').reset();
+            document.getElementById('editUserId').value = "";
+            document.getElementById('pendingId').value = "";
+            document.getElementById('modalTitle').textContent = "Tambah User";
+            document.getElementById('submitBtn').textContent = "Simpan Metadata";
+            document.getElementById('addUserModal').style.display = 'block';
+        };
+        
+        document.getElementById('openUserList').onclick = () => { 
+            document.getElementById('userSearchInput').value = '';
+            renderUserList(currentUsers); 
+            document.getElementById('userListModal').style.display = 'block'; 
+        };
+
+        // OPEN WAITING ROOM MODAL
+        document.getElementById('openWaitingRoom').onclick = () => {
+            renderPendingList();
+            document.getElementById('waitingRoomModal').style.display = 'block';
+        };
+        
+        document.querySelectorAll('.close').forEach(btn => 
+            btn.onclick = () => btn.closest('.modal').style.display = 'none'
+        );
+        
+        document.getElementById('togglePassword').onclick = function() {
+            const input = document.getElementById('password');
+            input.type = input.type === 'password' ? 'text' : 'password';
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        };
+        
+        window.onclick = (e) => { 
+            if (e.target.classList.contains('modal')) 
+                e.target.style.display = 'none'; 
+        };
+    
+        loadAll();
+        setInterval(loadAll, 10000);
+    </script>
+</body>
+</html>

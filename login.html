@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Login Admin - Inklusi Teknologi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(77,171,247,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .login-box {
+            background: rgba(30, 30, 46, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(77, 171, 247, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(77,171,247,0.2), transparent 30%);
+            animation: spin 8s linear infinite;
+            z-index: -1;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 35px;
+            position: relative;
+            z-index: 2;
+        }
+        .logo i {
+            font-size: 50px;
+            color: #4dabf7;
+            background: rgba(77, 171, 247, 0.15);
+            width: 100px;
+            height: 100px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            border: 2px solid rgba(77, 171, 247, 0.3);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(77, 171, 247, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(77, 171, 247, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(77, 171, 247, 0); }
+        }
+        .logo h2 {
+            color: #ffffff;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+        .logo p {
+            color: #a0a0c0;
+            font-size: 15px;
+            margin-top: 8px;
+        }
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(20, 20, 30, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #f0f0ff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #4dabf7;
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.3);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #4dabf7, #339af0);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(77, 171, 247, 0.4);
+        }
+        .btn-login:active {
+            transform: translateY(-1px);
+        }
+        .error {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+        .glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(77, 171, 247, 0.1);
+            filter: blur(60px);
+            z-index: -1;
+            animation: float 8s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, -20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow"></div>
+    <div class="login-box">
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <h2>INKLUSI TEKNOLOGI</h2>
+            <p>Admin Secure Login</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="text" id="username" name="username" placeholder="Username" autocomplete="off" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn-login">MASUK KE DASHBOARD</button>
+        </form>
+        
+        <div id="errorMsg" class="error"></div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = '';
+
+            try {
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                // ✅ PERIKSA STATUS RESPON
+                if (!res.ok) {
+                    // Coba parse JSON error
+                    try {
+                        const errorData = await res.json();
+                        errorMsg.textContent = errorData.message || 'Login gagal!';
+                    } catch (e) {
+                        // Jika bukan JSON (misal: 404 HTML), beri pesan umum
+                        errorMsg.textContent = 'Server tidak merespons. Pastikan server berjalan.';
+                    }
+                    return;
+                }
+
+                // Jika sukses
+                const data = await res.json();
+                if (data.success) {
+                    window.location.href = '/admin';
+                } else {
+                    errorMsg.textContent = 'Username atau password salah!';
+                }
+            } catch (err) {
+                console.error('Koneksi gagal:', err);
+                errorMsg.textContent = 'Kesalahan koneksi. Pastikan server berjalan di port 3000.';
+            }
+        });
+    </script>
+</body>
+</html>
