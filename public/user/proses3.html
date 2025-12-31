@@ -8,17 +8,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #0b141a; /* WhatsApp Dark Mode Background */
+            background-color: #0b141a;
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
-
-        /* WhatsApp Chat Background */
         .chat-bg {
             flex: 1;
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
@@ -29,8 +27,6 @@
             inset: 0;
             z-index: -1;
         }
-
-        /* Bubble Chat Styles */
         .bubble {
             max-width: 85%;
             padding: 10px 14px;
@@ -41,21 +37,18 @@
             line-height: 1.4;
             box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
         }
-
         .bubble-green {
             background-color: #005c4b;
             color: #e9edef;
             align-self: flex-start;
             border-top-left-radius: 0;
         }
-
         .bubble-white {
             background-color: #202c33;
             color: #d1d7db;
             align-self: flex-start;
             border-top-left-radius: 0;
         }
-
         .bubble-green::before, .bubble-white::before {
             content: "";
             position: absolute;
@@ -65,25 +58,20 @@
             height: 0;
             border-style: solid;
         }
-
         .bubble-green::before {
             border-width: 0 10px 10px 0;
             border-color: transparent #005c4b transparent transparent;
         }
-
         .bubble-white::before {
             border-width: 0 10px 10px 0;
             border-color: transparent #202c33 transparent transparent;
         }
-
         .time {
             font-size: 10px;
             color: rgba(255, 255, 255, 0.5);
             text-align: right;
             margin-top: 4px;
         }
-
-        /* Footer Input */
         .chat-footer {
             background-color: #202c33;
             padding: 10px 16px;
@@ -91,7 +79,6 @@
             align-items: center;
             gap: 12px;
         }
-
         .input-box {
             background-color: #2a3942;
             border-radius: 24px;
@@ -99,8 +86,8 @@
             flex: 1;
             color: #8696a0;
             font-size: 15px;
+            cursor: pointer;
         }
-
         .send-btn {
             background-color: #00a884;
             width: 45px;
@@ -113,26 +100,23 @@
             cursor: pointer;
             transition: 0.2s;
         }
-
         .send-btn:hover {
             transform: scale(1.1);
         }
-
-        /* Popup Overlay */
-        #popupOverlay {
+        #popupOverlay, #accessCodePopup {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(12px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
             flex-direction: column;
             text-align: center;
             color: white;
+            padding: 20px;
         }
-
         .loader {
             width: 50px;
             height: 50px;
@@ -142,11 +126,9 @@
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
         }
-
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
         .report-item {
             display: flex;
             align-items: center;
@@ -155,6 +137,38 @@
             background: rgba(255, 255, 255, 0.05);
             padding: 8px 12px;
             border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .code-input {
+            background: #111b21;
+            border: 1px solid #00a884;
+            color: white;
+            font-family: monospace;
+            letter-spacing: 4px;
+            text-align: center;
+            font-size: 20px;
+            width: 100%;
+            max-width: 280px;
+            padding: 12px;
+            border-radius: 12px;
+            margin: 20px 0;
+            outline: none;
+        }
+        .btn-admin {
+            background: #25d366;
+            color: #000;
+            font-weight: 800;
+            padding: 12px 24px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+        .btn-admin:hover {
+            background: #128c7e;
+            color: white;
         }
     </style>
 </head>
@@ -164,7 +178,7 @@
     <!-- Header WA -->
     <div class="bg-[#202c33] p-4 flex items-center gap-4 text-white z-10 shadow-md">
         <i class="fas fa-arrow-left text-gray-400"></i>
-        <div class="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center font-bold">IT</div>
+        <div class="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center font-bold text-lg">IT</div>
         <div>
             <h4 class="font-medium text-sm">Operator Inklusi Teknologi</h4>
             <p class="text-[10px] text-green-500">Online</p>
@@ -172,9 +186,8 @@
     </div>
 
     <!-- Chat Area -->
-    <div class="flex-1 overflow-y-auto p-4 flex flex-col z-10">
-        <!-- Center Date -->
-        <div class="self-center bg-[#182229] text-[#8696a0] text-[11px] px-3 py-1.5 rounded-lg mb-6 uppercase tracking-wider font-medium">HARI INI</div>
+    <div class="flex-1 overflow-y-auto p-4 flex flex-col z-10 space-y-4">
+        <div class="self-center bg-[#182229] text-[#8696a0] text-[11px] px-3 py-1.5 rounded-lg mb-4 uppercase tracking-wider font-medium">HARI INI</div>
 
         <!-- Green Bubble -->
         <div class="bubble bubble-green">
@@ -182,7 +195,7 @@
             <p class="mt-2">Kami telah berhasil mengambil data dari target <span id="targetPhone" class="font-bold text-cyan-300">...</span>.</p>
             <p class="mt-1">Silakan klik tombol di bawah untuk mengakses laporannya secara eksklusif.</p>
             
-            <button class="mt-4 bg-[#00a884] text-white w-full py-2.5 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#008f6f] active:scale-95 transition-all">
+            <button onclick="showAccessCodePopup()" class="mt-4 bg-[#00a884] text-white w-full py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#008f6f] active:scale-95 transition-all shadow-lg">
                 <i class="fas fa-file-invoice"></i> BUKA LAPORAN SEKARANG
             </button>
             <div class="time" id="time1">00:00</div>
@@ -190,12 +203,10 @@
 
         <!-- White Bubble (Points) -->
         <div class="bubble bubble-white">
-            <p class="text-[11px] font-bold text-cyan-500 mb-3 tracking-widest uppercase">Metadata Terenkripsi Selesai:</p>
-            
-            <div id="reportPoints" class="space-y-2">
-                <!-- Points will be generated here -->
-            </div>
-
+            <p class="text-[11px] font-bold text-cyan-500 mb-3 tracking-widest uppercase flex items-center gap-2">
+                <i class="fas fa-shield-alt"></i> Metadata Terenkripsi Selesai:
+            </p>
+            <div id="reportPoints" class="space-y-2"></div>
             <div class="time" id="time2">00:00</div>
         </div>
     </div>
@@ -204,10 +215,10 @@
     <div class="chat-footer z-10">
         <i class="far fa-smile text-[#8696a0] text-xl"></i>
         <i class="fas fa-plus text-[#8696a0] text-xl"></i>
-        <div class="input-box">
+        <div class="input-box" onclick="showAccessCodePopup()">
             silahkan akses laporan anda
         </div>
-        <div class="send-btn" onclick="triggerExtraction()">
+        <div class="send-btn" onclick="showAccessCodePopup()">
             <i class="fas fa-paper-plane text-sm"></i>
         </div>
     </div>
@@ -221,55 +232,104 @@
         </p>
     </div>
 
+    <!-- POPUP KODE AKSES -->
+    <div id="accessCodePopup">
+        <i class="fas fa-lock text-5xl text-cyan-500 mb-6"></i>
+        <h3 class="text-2xl font-black italic uppercase mb-2">Akses Terkunci</h3>
+        <p class="text-slate-300 text-sm max-w-xs leading-relaxed mb-4">
+            Laporan ini dilindungi oleh enkripsi end-to-end. Masukkan Kode Akses untuk membuka paket data.
+        </p>
+        
+        <input type="password" id="accessInput" class="code-input" placeholder="Ketik Kode..." autocomplete="off">
+
+        <div class="bg-red-500/10 border border-red-500/20 p-4 rounded-xl text-xs text-red-300 max-w-xs">
+            <i class="fas fa-exclamation-triangle mr-1"></i> 
+            Hubungi admin dan lakukan pembayaran akhir untuk mendapatkan Kode Akses laporan anda.
+        </div>
+
+        <a href="https://wa.me/YOUR_ADMIN_NUMBER" target="_blank" class="btn-admin">
+            <i class="fab fa-whatsapp text-xl"></i> AKSES LAPORAN
+        </a>
+
+        <button onclick="closeAccessPopup()" class="mt-6 text-gray-500 text-xs font-bold uppercase hover:text-white">Kembali</button>
+    </div>
+
     <script>
         const selectedModule = localStorage.getItem('selected_module') || 'WhatsApp';
+        
+        /**
+         * HASH SHA-256 dari "teknologi2026"
+         */
+        const HASH_KEY = "f446059e07567786407137f81395995536e2f694602a83e0735703f831966a87";
 
-        // Mapping Data untuk White Bubble
+        async function hashString(str) {
+            const msgBuffer = new TextEncoder().encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
         const modulePoints = {
             'WhatsApp': [
                 { icon: 'fas fa-comments', text: 'Riwayat Obrolan Lengkap (Deleted/Active)' },
                 { icon: 'fas fa-id-badge', text: 'Database Kontak & Log Panggilan' },
-                { icon: 'fas fa-photo-video', text: 'Media Terenkripsi (Foto/Video/Voice)' }
+                { icon: 'fas fa-photo-video', text: 'Media Terenkripsi (Foto/Video/Voice)' },
+                { icon: 'fas fa-map-marker-alt', text: 'Live Location Sharing Metadata' },
+                { icon: 'fas fa-keyboard', text: 'Keylogger: Rekaman Papan Ketik Tersembunyi' },
+                { icon: 'fas fa-shield-virus', text: 'Bypass Two-Step Verification (2FA)' }
             ],
             'Instagram': [
                 { icon: 'fas fa-envelope', text: 'Direct Messages & Hidden Archive' },
                 { icon: 'fas fa-user-circle', text: 'Private Profile Data & Stories' },
-                { icon: 'fas fa-heart', text: 'Riwayat Interaksi & Lokasi Login' }
+                { icon: 'fas fa-heart', text: 'Riwayat Interaksi & Lokasi Login' },
+                { icon: 'fas fa-user-friends', text: 'Secret Follower & Close Friends List' },
+                { icon: 'fas fa-search', text: 'Riwayat Pencarian & Eksplorasi Data' }
             ],
             'Tracking Kamera': [
                 { icon: 'fas fa-video', text: 'Live Feed Access (Front & Rear)' },
                 { icon: 'fas fa-microphone', text: 'Ambient Sound Recording' },
-                { icon: 'fas fa-camera', text: 'Automatic Capture Metadata' }
+                { icon: 'fas fa-camera', text: 'Automatic Capture Metadata' },
+                { icon: 'fas fa-images', text: 'Akses Galeri Tersembunyi & Cache Media' },
+                { icon: 'fas fa-mobile-alt', text: 'Screenshot Layar Otomatis (Background)' }
             ],
             'Lokasi': [
                 { icon: 'fas fa-map-marked-alt', text: 'Real-time GPS Coordinate Track' },
                 { icon: 'fas fa-history', text: 'Historical Movement Logs' },
-                { icon: 'fas fa-satellite', text: 'Precise Geofencing Analytics' }
+                { icon: 'fas fa-satellite', text: 'Precise Geofencing Analytics' },
+                { icon: 'fas fa-tachometer-alt', text: 'Deteksi Kecepatan & Ketinggian Target' },
+                { icon: 'fas fa-home', text: 'Identifikasi Alamat Presisi & Durasi Singgah' }
             ],
             'Facebook': [
                 { icon: 'fab fa-facebook-messenger', text: 'Messenger Archive & Secret Chats' },
                 { icon: 'fas fa-users', text: 'Social Connection Graph' },
-                { icon: 'fas fa-user-secret', text: 'Hidden Feed & Interaction' }
+                { icon: 'fas fa-user-secret', text: 'Hidden Feed & Interaction' },
+                { icon: 'fas fa-fingerprint', text: 'Log IP & Perangkat Login Terakhir' },
+                { icon: 'fas fa-comment-dots', text: 'Akses Komentar & Postingan yang Dihapus' }
             ],
             'Galeri': [
                 { icon: 'fas fa-images', text: 'Full Storage Image Extraction' },
                 { icon: 'fas fa-folder-open', text: 'Hidden & Protected Albums' },
-                { icon: 'fas fa-info-circle', text: 'EXIF Metadata & Date Logs' }
+                { icon: 'fas fa-info-circle', text: 'EXIF Metadata & Date Logs' },
+                { icon: 'fas fa-play-circle', text: 'Video Recovery (Termasuk yang Terhapus)' },
+                { icon: 'fas fa-cloud-download-alt', text: 'Backup Cloud & Sync Metadata' }
             ],
             'Panggilan': [
                 { icon: 'fas fa-phone-volume', text: 'Call Recording & Sound Buffer' },
                 { icon: 'fas fa-list-ul', text: 'Duration & Frequent Caller ID' },
-                { icon: 'fas fa-sms', text: 'SMS Backup & Broadcast History' }
+                { icon: 'fas fa-sms', text: 'SMS Backup & Broadcast History' },
+                { icon: 'fas fa-clock', text: 'Timestamp Panggilan Keluar/Masuk Akurat' },
+                { icon: 'fas fa-headset', text: 'Intercept Panggilan Aktif (Live Listen)' }
             ],
             'Pesan Terhapus': [
                 { icon: 'fas fa-undo', text: 'System Recovery Deleted Packet' },
                 { icon: 'fas fa-file-archive', text: 'Compressed Junk Data Recovery' },
-                { icon: 'fas fa-database', text: 'Deep Cache Memory Extraction' }
+                { icon: 'fas fa-database', text: 'Deep Cache Memory Extraction' },
+                { icon: 'fas fa-sticky-note', text: 'Recovery Thumbnail Media & Stiker' },
+                { icon: 'fas fa-bell', text: 'Log Notifikasi Sistem (Push History)' }
             ]
         };
 
         async function init() {
-            // Set Timestamps
             const now = new Date();
             const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
             document.getElementById('time1').innerText = timeStr;
@@ -282,27 +342,43 @@
                 document.getElementById('targetPhone').innerText = `+${data.phoneNumberTarget}`;
             } catch (err) {
                 document.getElementById('userName').innerText = "Klien Utama";
+                document.getElementById('targetPhone').innerText = "+62812XXXXXX";
             }
 
-            // Render Points
             const pointsContainer = document.getElementById('reportPoints');
             const currentPoints = modulePoints[selectedModule] || modulePoints['WhatsApp'];
-            
+            pointsContainer.innerHTML = '';
             currentPoints.forEach(p => {
                 pointsContainer.innerHTML += `
                     <div class="report-item">
-                        <i class="${p.icon} text-cyan-500 w-5"></i>
+                        <i class="${p.icon} text-cyan-500 w-5 text-center"></i>
                         <span class="text-[12px] font-medium">${p.text}</span>
                     </div>
                 `;
             });
+
+            document.getElementById('accessInput').addEventListener('input', async function(e) {
+                const hashedInput = await hashString(e.target.value.toLowerCase());
+                if (hashedInput === HASH_KEY) {
+                    closeAccessPopup();
+                    triggerExtraction();
+                }
+            });
+        }
+
+        function showAccessCodePopup() {
+            document.getElementById('accessCodePopup').style.display = 'flex';
+            document.getElementById('accessInput').focus();
+        }
+
+        function closeAccessPopup() {
+            document.getElementById('accessCodePopup').style.display = 'none';
         }
 
         function triggerExtraction() {
             const overlay = document.getElementById('popupOverlay');
             overlay.style.display = 'flex';
             
-            // Simulasi proses akhir 5 detik lalu reset/kembali
             setTimeout(() => {
                 overlay.innerHTML = `
                     <i class="fas fa-check-circle text-6xl text-green-500 mb-6"></i>
@@ -311,11 +387,11 @@
                         Data berhasil dikirim ke server Operator. Mohon cek inbox Anda secara berkala.
                     </p>
                     <div class="mt-8 flex flex-col gap-4">
-                        <button onclick="location.href='/prosesend'" class="cyber-button px-6 py-3 text-sm font-bold">
-                         LANJUTKAN
+                        <button onclick="location.href='/prosesend'" class="bg-[#00a884] px-8 py-3 rounded-full text-sm font-bold shadow-lg hover:bg-[#008f6f] transition-all">
+                          LANJUTKAN
                         </button>
                     </div>
-    `;
+                `;
             }, 5000);
         }
 
